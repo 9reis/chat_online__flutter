@@ -12,36 +12,25 @@ void main() async {
 
   var db = await FirebaseFirestore.instance;
 
-  // Create a new user with a first and last name
-  final user = <String, dynamic>{
-    "first": "Ada",
-    "last": "Lovelace",
-    "born": 1815
+  String id = "YyFOQeZmNkk9k4en8Oav";
+
+  db.collection('mensagens').doc(id).collection('arquivos').doc().set({
+    //set({ content })
+    // 'texto': 'Tudo 444444',
+    // 'from': 'Teste 55555',
+    // 'read': true,
+    'arqname': 'foto.png'
+  });
+
+  final msg = <String, dynamic>{
+    'texto': 'Tudo bem?',
+    'from': 'MArcelo',
+    'read': false,
   };
 
-// Add a new document with a generated ID
-  db.collection("users").add(user).then((DocumentReference doc) =>
-      print('DocumentSnapshot added with ID: ${doc.id}'));
-
-  // Create a new user with a first and last name
-  final user2 = <String, dynamic>{
-    "first": "Alan",
-    "middle": "Mathison",
-    "last": "Turing",
-    "born": 1912
-  };
-
-// Add a new document with a generated ID
-  db.collection("users").add(user2).then((DocumentReference doc) =>
-      print('DocumentSnapshot added with ID: ${doc.id}'));
-
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
-
-  // FirebaseFirestore.instance
-  //     .collection("col")
-  //     .doc("doc")
-  //     .set({"texto": "9reis"});
+  // db.collection('mensagens').add(msg).then(
+  //   (DocumentReference doc) =>
+  //       print('DocumentSnapshot added with ID : ${doc.id}'));
 }
 
 class MyApp extends StatelessWidget {
