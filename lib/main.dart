@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,28 +11,25 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  var db = await FirebaseFirestore.instance;
-
   String id = "YyFOQeZmNkk9k4en8Oav";
 
-  db.collection('mensagens').doc(id).collection('arquivos').doc().set({
-    //set({ content })
-    // 'texto': 'Tudo 444444',
-    // 'from': 'Teste 55555',
-    // 'read': true,
-    'arqname': 'foto.png'
+  //Pega UM documento
+  // DocumentSnapshot snapshot =
+  //     await FirebaseFirestore.instance.collection("mensagens").doc(id).get();
+  // print(snapshot.data());
+
+  //Pega VÁRIOS documentos
+  await Firebase.initializeApp();
+
+  await FirebaseFirestore.instance
+      .collection("mensagens")
+      .doc('YyFOQeZmNkk9k4en8Oav')
+      .snapshots()
+      .listen((dado) {
+    print(dado.data());
   });
 
-  final msg = <String, dynamic>{
-    'texto': 'Tudo bem?',
-    'from': 'MArcelo',
-    'read': false,
-  };
-
-  // db.collection('mensagens').add(msg).then(
-  //   (DocumentReference doc) =>
-  //       print('DocumentSnapshot added with ID : ${doc.id}'));
+  // Pega toda a coleção sempre que um dado for alterado
 }
 
 class MyApp extends StatelessWidget {
