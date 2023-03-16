@@ -12,25 +12,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  String id = "YyFOQeZmNkk9k4en8Oav";
-
-  //Pega UM documento
-  // DocumentSnapshot snapshot =
-  //     await FirebaseFirestore.instance.collection("mensagens").doc(id).get();
-  // print(snapshot.data());
-
-  //Pega VÁRIOS documentos
-  await Firebase.initializeApp();
-
-  await FirebaseFirestore.instance
-      .collection("mensagens")
-      .doc('YyFOQeZmNkk9k4en8Oav')
-      .snapshots()
-      .listen((dado) {
-    print(dado.data());
-  });
-
-  // Pega toda a coleção sempre que um dado for alterado
 }
 
 class MyApp extends StatelessWidget {
