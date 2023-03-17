@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat_online__flutter/chat_message.dart';
 import 'package:chat_online__flutter/text_composer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,7 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Map<String, dynamic> data = {
       'uid': user!.uid,
       'senderName': user.displayName,
-      'senderPhoto': user.photoURL,
+      'senderPhotoUrl': user.photoURL,
       'time': Timestamp.now()
     };
 
@@ -137,9 +138,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemCount: docs.length,
                       reverse: true, // msg aparece de baixo para cima
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(docs[index].get('text')),
-                        );
+                        return ChatMessage(
+                            docs[index].data() as Map<String, dynamic>, true);
                       },
                     );
                 }
