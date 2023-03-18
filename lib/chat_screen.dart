@@ -21,6 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   //Usuario atual
   User? _currentUser;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -95,12 +96,20 @@ class _ChatScreenState extends State<ChatScreen> {
           .ref()
           .child(DateTime.now().millisecondsSinceEpoch.toString())
           .putFile(imgFile);
+      // Quando começa a carregar a img
+      setState(() {
+        _isLoading = true;
+      });
 
       TaskSnapshot taskSnapshot = await task;
       //Pega a url de download
       String url = await taskSnapshot.ref.getDownloadURL();
       //Se for feito o upload da img, ela é armazenada no map
       data["imgUrl"] = url;
+      // Quando termina de carregar a img
+      setState(() {
+        _isLoading = false;
+      });
     }
 
     if (text != null) {
@@ -114,15 +123,35 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Olá'),
+        centerTitle: true,
+        title: Text(_currentUser != null
+            ? 'Olá, ${_currentUser!.displayName}'
+            : "Chat App"),
         elevation: 0,
+        actions: [
+          _currentUser != null
+              ? IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    //Sai do Fb e do GG
+                    FirebaseAuth.instance.signOut();
+                    googleSignIn.signOut();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Voce saiu com sucesso"),
+                    ));
+                  },
+                )
+              : Container(),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('messages').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('messages')
+                  .orderBy('time')
+                  .snapshots(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -139,13 +168,16 @@ class _ChatScreenState extends State<ChatScreen> {
                       reverse: true, // msg aparece de baixo para cima
                       itemBuilder: (context, index) {
                         return ChatMessage(
-                            docs[index].data() as Map<String, dynamic>, true);
+                          docs[index].data() as Map<String, dynamic>,
+                          docs[index].get('uid') == _currentUser?.uid,
+                        );
                       },
                     );
                 }
               },
             ),
           ),
+          _isLoading ? LinearProgressIndicator() : Container(),
           TextComposer(_sendMessage),
         ],
       ),
